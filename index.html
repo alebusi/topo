@@ -1,0 +1,143 @@
+<script>
+// colpisci il sorcio
+// by DaemonKing
+
+window.status="Colpisci il sorcio - By Daemon King - Dedicato ad una pippa che conosco :) ihihi";
+var sparo=false;
+var colpito=0;
+var timer=null;
+var tempo=200;
+var timer_rimasto=null;
+var parametro=false;
+var timer_to_blink=null;
+var timer_to_kill=null;
+
+
+function muovi_il_sorcio(parametro)
+{
+clearInterval(timer_to_blink);
+
+if(!parametro)
+	{
+	document.images["sorcio"].style.left=Math.round( Math.random()*700 );
+	document.images["sorcio"].style.top=Math.round( Math.random()*500 );
+	document.images["sorcio"].src="sorcio.gif";
+	document.images["sorcio"].style.display="block";
+	timer=setInterval("nascondi_il_sorcio()",2000);
+	}
+	else return 0;
+
+}
+
+
+function nascondi_il_sorcio()
+{
+clearInterval(timer);
+clearInterval(timer_to_blink);
+
+if(sparo)
+	timer_to_kill=setInterval("ripristina_sorcio()",500);
+else
+	{
+	document.images["sorcio"].style.display="none";
+	document.images["sorcio"].src="sorcio.gif";
+	}	
+
+	if(!parametro)
+	{
+		timer_to_blink=setInterval("muovi_il_sorcio()",500);
+	}
+	else
+		return 0;
+
+}
+
+
+function aggiorna_punteggio()
+{
+colpito+=1;
+document.getElementById("punti").value=colpito;
+}
+
+
+function scala_il_tempo()
+{
+clearInterval(timer_rimasto);
+
+tempo-=1;
+document.getElementById("time_expired").value=tempo;
+
+if(tempo > 0)
+	timer_rimasto=setInterval("scala_il_tempo()",1000);
+
+	else
+	{
+	if(colpito < 20) alert("Sei una pippaaa!!!"); else alert("Bene, hai fatto "+colpito+" punti!");
+	the_end();
+	}
+
+}
+
+
+function uccidi_sorcio()
+{
+window.status=":::BONUS:::";
+tempo=tempo+1; // il secondo extra � per il tempo che si perde, e serve a rallentare la fine del gioco
+sparo=true;
+document.images["sorcio"].src="sorcio_morto.gif";
+}
+
+
+function ripristina_sorcio()
+{
+document.images["sorcio"].style.display="none";
+sparo=false;
+clearInterval(timer_to_kill);
+document.images["sorcio"].src="sorcio.gif";
+window.status="Colpisci il sorcio - By Daemon King - Dedicato ad una pippa che conosco :) ihihi";
+}
+
+
+function the_end()
+{
+parametro=true;
+document.getElementById("gameover").style.display="block";
+document.bgColor="red";
+window.status="Colpisci il sorcio - By Daemon King - Dedicato ad una pippa che conosco :) ihihi";
+}
+
+</script>
+
+
+
+<html>
+<title>COLPISCI IL SORCIO</title>
+<body bgcolor="white" onload="scala_il_tempo(); muovi_il_sorcio()">
+
+<noscript>
+<b><u>Per giocare devi attivare JavaScript, dal tuo browser!</u></b>
+</noscript>
+
+<center>
+
+	<div id="gameover" 
+style="vertical-align: middle; width: 90%; height: 450; background-color: black; z-index: 2000; color: white; display: none">
+	
+	<div style="vertical-align: middle">
+	<h1>GAME OVER!</h1>
+
+	<big><b><a title="RIGIOCA!" href="colpisci_il_sorcio.htm">REPLAY</a></b></big>	
+	</div>
+	
+	</div>
+
+</center><br>
+
+
+Punti: <input readonly type="text" value="0" id="punti" style="border: none; background-color: transparent;"><br>
+Tempo: <input readonly type="text" value="0" id="time_expired" style="border: none; background-color: transparent;">
+
+<img name="sorcio" src="sorcio.gif" style="cursor: crosshair; z-index: 1000; position: absolute; display: none" onclick="if(!sparo){ uccidi_sorcio(); nascondi_il_sorcio(); aggiorna_punteggio(); }">
+
+</body>
+</html>
